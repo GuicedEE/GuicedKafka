@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/GuicedEE/GuicedKafka/actions/workflows/build.yml/badge.svg)](https://github.com/GuicedEE/GuicedKafka/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.guicedee/kafka)](https://central.sonatype.com/artifact/com.guicedee/kafka)
-[![Maven Snapshot](https://img.shields.io/nexus/s/com.guicedee/kafka?server=https%3A%2F%2Foss.sonatype.org&label=Maven%20Snapshot)](https://oss.sonatype.org/content/repositories/snapshots/com/guicedee/kafka/)
+[![Snapshot](https://img.shields.io/badge/Snapshot-2.0.0-SNAPSHOT-orange)](https://github.com/GuicedEE/Packages/packages/maven/com.guicedee.kafka)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ![Java 25+](https://img.shields.io/badge/Java-25%2B-green)
@@ -105,32 +105,57 @@ That's it. `KafkaPreStartup` discovers the annotations, `KafkaModule` creates th
 
 ## 📐 Architecture
 
-```
-Startup
-  IGuiceContext.instance()
-   └─ KafkaPreStartup              (IGuicePreStartup — annotation scanning)
-       ├─ Discovers @KafkaConnectionOptions (classes and package-info.java)
-       ├─ Discovers @KafkaTopicCreate annotations
-       ├─ Discovers @KafkaTopicDefinition consumer classes
-       ├─ Discovers @Named KafkaTopicPublisher fields
-       └─ Registers metadata for binding
-   └─ KafkaModule                  (IGuiceModule — Guice bindings)
-       ├─ Creates KafkaProducer per connection (via Vert.x)
-       ├─ Creates KafkaConsumer per connection
-       ├─ Creates KafkaAdminClient per connection
-       ├─ Binds KafkaTopicConsumer implementations as singletons
-       └─ Binds KafkaTopicPublisher instances as @Named("topic-name")
-   └─ KafkaPostStartup             (IGuicePostStartup — runtime initialization)
-       ├─ Creates declared topics via KafkaAdminClient
-       ├─ Creates per-topic consumers
-       ├─ Registers partition assigned/revoked handlers
-       ├─ Subscribes to topics or assigns partitions
-       └─ Starts consuming with call-scoped message handling
-   └─ KafkaPreDestroy              (IGuicePreDestroy — shutdown)
-       ├─ Closes all topic consumers
-       ├─ Closes all package consumers
-       ├─ Closes all producers
-       └─ Closes all admin clients
+```mermaid
+flowchart TD
+    n1["Startup"]
+    n2["IGuiceContext.instance()"]
+    n1 --> n2
+    n3["KafkaPreStartup<br/>IGuicePreStartup — annotation scanning"]
+    n2 --> n3
+    n4["Discovers @KafkaConnectionOptions<br/>classes and package-info.java"]
+    n3 --> n4
+    n5["Discovers @KafkaTopicCreate annotations"]
+    n3 --> n5
+    n6["Discovers @KafkaTopicDefinition consumer classes"]
+    n3 --> n6
+    n7["Discovers @Named KafkaTopicPublisher fields"]
+    n3 --> n7
+    n8["Registers metadata for binding"]
+    n3 --> n8
+    n9["KafkaModule<br/>IGuiceModule — Guice bindings"]
+    n2 --> n9
+    n10["Creates KafkaProducer per connection<br/>via Vert.x"]
+    n9 --> n10
+    n11["Creates KafkaConsumer per connection"]
+    n9 --> n11
+    n12["Creates KafkaAdminClient per connection"]
+    n9 --> n12
+    n13["Binds KafkaTopicConsumer implementations as singletons"]
+    n9 --> n13
+    n14["Binds KafkaTopicPublisher instances as @Named('topic-name')"]
+    n9 --> n14
+    n15["KafkaPostStartup<br/>IGuicePostStartup — runtime initialization"]
+    n2 --> n15
+    n16["Creates declared topics via KafkaAdminClient"]
+    n15 --> n16
+    n17["Creates per-topic consumers"]
+    n15 --> n17
+    n18["Registers partition assigned/revoked handlers"]
+    n15 --> n18
+    n19["Subscribes to topics or assigns partitions"]
+    n15 --> n19
+    n20["Starts consuming with call-scoped message handling"]
+    n15 --> n20
+    n21["KafkaPreDestroy<br/>IGuicePreDestroy — shutdown"]
+    n2 --> n21
+    n22["Closes all topic consumers"]
+    n21 --> n22
+    n23["Closes all package consumers"]
+    n21 --> n23
+    n24["Closes all producers"]
+    n21 --> n24
+    n25["Closes all admin clients"]
+    n21 --> n25
 ```
 
 ### Message lifecycle
@@ -327,14 +352,15 @@ The name is normalized to uppercase with hyphens and dots replaced by underscore
 
 ## 🗺️ Module Graph
 
-```
-com.guicedee.kafka
- ├── io.vertx.client.kafka         (Vert.x Kafka client)
- ├── org.apache.kafka.client       (Apache Kafka client)
- ├── com.guicedee.vertx            (Vert.x lifecycle)
- ├── com.guicedee.client           (GuicedEE SPI contracts)
- ├── io.github.classgraph          (annotation scanning)
- └── org.apache.commons.lang3      (StringUtils)
+```mermaid
+flowchart LR
+    com_guicedee_kafka["com.guicedee.kafka"]
+    com_guicedee_kafka --> io_vertx_client_kafka["io.vertx.client.kafka<br/>Vert.x Kafka client"]
+    com_guicedee_kafka --> org_apache_kafka_client["org.apache.kafka.client<br/>Apache Kafka client"]
+    com_guicedee_kafka --> com_guicedee_vertx["com.guicedee.vertx<br/>Vert.x lifecycle"]
+    com_guicedee_kafka --> com_guicedee_client["com.guicedee.client<br/>GuicedEE SPI contracts"]
+    com_guicedee_kafka --> io_github_classgraph["io.github.classgraph<br/>annotation scanning"]
+    com_guicedee_kafka --> org_apache_commons_lang3["org.apache.commons.lang3<br/>StringUtils"]
 ```
 
 ## 🧩 JPMS
