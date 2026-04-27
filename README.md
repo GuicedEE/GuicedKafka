@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/GuicedEE/GuicedKafka/actions/workflows/build.yml/badge.svg)](https://github.com/GuicedEE/GuicedKafka/actions/workflows/build.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.guicedee/kafka)](https://central.sonatype.com/artifact/com.guicedee/kafka)
-[![Snapshot](https://img.shields.io/badge/Snapshot-2.0.0-SNAPSHOT-orange)](https://github.com/GuicedEE/Packages/packages/maven/com.guicedee.kafka)
+[![Snapshot](https://img.shields.io/badge/Snapshot-2.0.1-SNAPSHOT-SNAPSHOT-orange)](https://github.com/GuicedEE/Packages/packages/maven/com.guicedee.kafka)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ![Java 25+](https://img.shields.io/badge/Java-25%2B-green)
@@ -28,7 +28,7 @@ Built on [Vert.x Kafka Client](https://vertx.io/docs/vertx-kafka-client/java/) Â
 <summary>Gradle (Kotlin DSL)</summary>
 
 ```kotlin
-implementation("com.guicedee:kafka:2.0.0-RC11")
+implementation("com.guicedee:kafka:2.0.1-SNAPSHOT")
 ```
 </details>
 
