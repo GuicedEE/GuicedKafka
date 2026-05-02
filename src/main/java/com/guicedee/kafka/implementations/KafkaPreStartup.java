@@ -174,12 +174,35 @@ public class KafkaPreStartup implements IGuicePreStartup<KafkaPreStartup>
         {
             for (KafkaTopicCreate create : creates)
             {
-                String topicName = create.value();
-                topicCreateDefinitions.putIfAbsent(topicName, create);
+                String topicName = envForName(create.value(), "TOPIC_NAME", create.value());
+                KafkaTopicCreate wrapped = wrapTopicCreate(topicName, create);
+                topicCreateDefinitions.putIfAbsent(topicName, wrapped);
                 topicConnectionNames.putIfAbsent(topicName, connectionName);
-                log.debug("Found Kafka Topic Create - {} (partitions={}, replication={})", topicName, create.partitions(), create.replicationFactor());
+                log.debug("Found Kafka Topic Create - {} (partitions={}, replication={})", topicName, wrapped.partitions(), wrapped.replicationFactor());
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private KafkaTopicCreate wrapTopicCreate(String topicName, KafkaTopicCreate ann)
+    {
+        return new KafkaTopicCreate()
+        {
+            @Override
+            public Class<? extends java.lang.annotation.Annotation> annotationType() { return KafkaTopicCreate.class; }
+
+            @Override
+            public String value() { return envForName(topicName, "TOPIC_CREATE_NAME", ann.value()); }
+
+            @Override
+            public int partitions() { return Integer.parseInt(envForName(topicName, "TOPIC_CREATE_PARTITIONS", String.valueOf(ann.partitions()))); }
+
+            @Override
+            public short replicationFactor() { return Short.parseShort(envForName(topicName, "TOPIC_CREATE_REPLICATION_FACTOR", String.valueOf(ann.replicationFactor()))); }
+
+            @Override
+            public boolean ignoreIfExists() { return Boolean.parseBoolean(envForName(topicName, "TOPIC_CREATE_IGNORE_IF_EXISTS", String.valueOf(ann.ignoreIfExists()))); }
+        };
     }
 
     private void processConnection(ScanResult scanResult, ClassInfo classInfo, Set<Class<?>> completedConsumers, boolean publishers)
