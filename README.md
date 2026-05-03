@@ -26,7 +26,7 @@ Built on [Vert.x Kafka Client](https://vertx.io/docs/vertx-kafka-client/java/) Â
 <summary>Gradle (Kotlin DSL)</summary>
 
 ```kotlin
-implementation("com.guicedee:kafka:2.0.1")
+implementation("com.guicedee:kafka:2.0.2-SNAPSHOT")
 ```
 </details>
 
