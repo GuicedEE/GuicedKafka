@@ -133,7 +133,7 @@ public class KafkaPostStartup implements IGuicePostStartup<KafkaPostStartup>
         });
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"rawtypes"})
     private void startConsumer(String packageName, KafkaConnectionOptions connectionOption, String topicName, KafkaTopicDefinition topicDef)
     {
         Class<? extends KafkaTopicConsumer> consumerClass = KafkaPreStartup.getTopicConsumerClass().get(topicName);
@@ -207,7 +207,7 @@ public class KafkaPostStartup implements IGuicePostStartup<KafkaPostStartup>
         }
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({"rawtypes"})
     private void processMessage(KafkaConsumerRecord<String, String> record, String topicName,
                                 KafkaTopicDefinition topicDef, Class<? extends KafkaTopicConsumer> consumerClass,
                                 KafkaTopicOptions options)

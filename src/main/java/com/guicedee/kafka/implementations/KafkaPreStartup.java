@@ -183,7 +183,6 @@ public class KafkaPreStartup implements IGuicePreStartup<KafkaPreStartup>
         }
     }
 
-    @SuppressWarnings("unchecked")
     private KafkaTopicCreate wrapTopicCreate(String topicName, KafkaTopicCreate ann)
     {
         return new KafkaTopicCreate()
@@ -424,7 +423,6 @@ public class KafkaPreStartup implements IGuicePreStartup<KafkaPreStartup>
         };
     }
 
-    @SuppressWarnings("unchecked")
     private KafkaConnectionOptions wrapConnectionOptions(String connectionName, KafkaConnectionOptions ann)
     {
         return new KafkaConnectionOptions()
