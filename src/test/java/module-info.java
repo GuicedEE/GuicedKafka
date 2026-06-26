@@ -10,7 +10,7 @@ module com.guicedee.kafka.test {
 
     requires io.vertx.client.kafka;
 
-    opens com.guicedee.kafka.test to com.google.guice, com.fasterxml.jackson.databind, io.github.classgraph, org.junit.platform.commons;
+    opens com.guicedee.kafka.test to com.google.guice, tools.jackson.databind, io.github.classgraph, org.junit.platform.commons;
 }
 
 

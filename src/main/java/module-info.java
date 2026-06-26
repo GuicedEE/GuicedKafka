@@ -22,8 +22,8 @@ module com.guicedee.kafka {
     provides IGuicePreStartup with KafkaPreStartup;
     provides IGuicePreDestroy with KafkaPreDestroy;
 
-    opens com.guicedee.kafka to com.google.guice, com.fasterxml.jackson.databind;
-    opens com.guicedee.kafka.implementations to com.fasterxml.jackson.databind, com.google.guice;
+    opens com.guicedee.kafka to com.google.guice, tools.jackson.databind;
+    opens com.guicedee.kafka.implementations to tools.jackson.databind, com.google.guice;
 }
 
 
