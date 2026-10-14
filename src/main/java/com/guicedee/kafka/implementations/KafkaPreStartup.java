@@ -1,5 +1,7 @@
 package com.guicedee.kafka.implementations;
 
+import com.guicedee.client.utils.ClassLoading;
+
 import com.guicedee.client.IGuiceContext;
 import com.guicedee.client.services.lifecycle.IGuicePreStartup;
 import com.guicedee.kafka.*;
@@ -208,14 +210,14 @@ public class KafkaPreStartup implements IGuicePreStartup<KafkaPreStartup>
     {
         log.debug("Found Kafka Connection - {}", classInfo.getName());
 
-        var connectionAnnotation = classInfo.loadClass().getAnnotation(KafkaConnectionOptions.class);
+        var connectionAnnotation = ClassLoading.loadClass(classInfo).getAnnotation(KafkaConnectionOptions.class);
         String connectionName = connectionAnnotation.value();
         KafkaConnectionOptions wrapped = wrapConnectionOptions(connectionName, connectionAnnotation);
         packageKafkaConnections.computeIfAbsent(classInfo.getPackageName(), k -> new ArrayList<>()).add(wrapped);
         packageConnectionNames.put(classInfo.getPackageName(), connectionName);
 
         // Scan for topic creation annotations on this class too
-        processTopicCreateAnnotations(classInfo.loadClass(), connectionName);
+        processTopicCreateAnnotations(ClassLoading.loadClass(classInfo), connectionName);
 
         var classInfos = scanResult.getPackageInfo(classInfo.getPackageName()).getClassInfoRecursive();
 
@@ -239,7 +241,7 @@ public class KafkaPreStartup implements IGuicePreStartup<KafkaPreStartup>
 
         for (ClassInfo consumerClassInfo : consumers)
         {
-            Class<? extends KafkaTopicConsumer> consumerClass = (Class<? extends KafkaTopicConsumer>) consumerClassInfo.loadClass();
+            Class<? extends KafkaTopicConsumer> consumerClass = (Class<? extends KafkaTopicConsumer>) ClassLoading.loadClass(consumerClassInfo);
             if (completedConsumers.contains(consumerClass))
             {
                 continue;
@@ -306,14 +308,14 @@ public class KafkaPreStartup implements IGuicePreStartup<KafkaPreStartup>
         }
         else
         {
-            var topicDef = publisherClassInfo.loadClass().getAnnotation(KafkaTopicDefinition.class);
+            var topicDef = ClassLoading.loadClass(publisherClassInfo).getAnnotation(KafkaTopicDefinition.class);
             return topicDef != null ? topicDef.value() : null;
         }
     }
 
     private List<Field> getPublisherFields(ClassInfo aClass)
     {
-        Class<?> clazz = aClass.loadClass();
+        Class<?> clazz = ClassLoading.loadClass(aClass);
         return Arrays.stream(clazz.getDeclaredFields())
                 .filter(field -> !Modifier.isFinal(field.getModifiers()) && !Modifier.isStatic(field.getModifiers()))
                 .filter(field -> {
